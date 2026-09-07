@@ -57,6 +57,8 @@ enum hotkey_flag
 
 #include "hashtable.h"
 
+#define HOTKEY_NO_BUTTON ((uint8_t)-1)
+
 struct carbon_event;
 
 struct mode
