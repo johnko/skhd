@@ -272,10 +272,15 @@ cgevent_flags_to_hotkey_flags(uint32_t eventflags)
 
 struct hotkey create_eventkey(CGEventRef event)
 {
+    CGEventType type = CGEventGetType(event);
+    bool is_mouse = type == kCGEventLeftMouseDown ||
+                    type == kCGEventRightMouseDown ||
+                    type == kCGEventOtherMouseDown;
     struct hotkey eventkey = {
-        .key = CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
         .flags = cgevent_flags_to_hotkey_flags(CGEventGetFlags(event)),
-        .button = CGEventGetIntegerValueField(event, kCGMouseEventButtonNumber),
+        .key = is_mouse ? 0 : CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
+        .button = is_mouse ? CGEventGetIntegerValueField(event, kCGMouseEventButtonNumber)
+                           : HOTKEY_NO_BUTTON,
     };
     return eventkey;
 }
@@ -294,6 +299,7 @@ bool intercept_systemkey(CGEventRef event, struct hotkey *eventkey)
     if (result) {
         eventkey->key = key_code;
         eventkey->flags = cgevent_flags_to_hotkey_flags(CGEventGetFlags(event)) | Hotkey_Flag_NX;
+        eventkey->button = HOTKEY_NO_BUTTON;
     }
 
     return result;
