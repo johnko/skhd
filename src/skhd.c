@@ -146,6 +146,9 @@ static EVENT_TAP_CALLBACK(key_observer_handler)
         uint32_t flags = CGEventGetFlags(event);
         uint32_t keycode = CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode);
         uint32_t button = CGEventGetIntegerValueField(event, kCGMouseEventButtonNumber);
+        bool is_mouse = type == kCGEventLeftMouseDown ||
+                        type == kCGEventRightMouseDown ||
+                        type == kCGEventOtherMouseDown;
 
         if (keycode == kVK_ANSI_C && flags & 0x40000) {
             exit(0);
@@ -158,7 +161,7 @@ static EVENT_TAP_CALLBACK(key_observer_handler)
         printf("\tbutton: %d", button);
         fflush(stdout);
 
-        return NULL;
+        return is_mouse ? event : NULL;
     } break;
     }
     return event;

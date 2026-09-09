@@ -122,7 +122,7 @@ find_hotkey(struct mode *mode, struct hotkey *hotkey, uint32_t *capture)
 }
 
 static inline bool
-should_capture_hotkey(uint32_t capture)
+should_capture_hotkey(struct hotkey *hotkey, uint32_t capture)
 {
     if ((capture & HOTKEY_FOUND)) {
         if (!(capture & MODE_CAPTURE(1)) &&
@@ -135,6 +135,10 @@ should_capture_hotkey(uint32_t capture)
             return true;
         }
 
+        return false;
+    }
+
+    if (hotkey->button != HOTKEY_NO_BUTTON) {
         return false;
     }
 
@@ -174,7 +178,7 @@ bool find_and_exec_hotkey(struct hotkey *k, struct table *t, struct mode **m, st
         }
         if (cmd) fork_and_exec(cmd);
     }
-    return should_capture_hotkey(c);
+    return should_capture_hotkey(k, c);
 }
 
 void free_mode_map(struct table *mode_map)
