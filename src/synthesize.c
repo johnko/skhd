@@ -14,22 +14,35 @@ create_and_post_keyevent(uint16_t key, bool pressed)
     CGPostKeyboardEvent((CGCharCode)0, (CGKeyCode)key, pressed);
 }
 
+static inline CGEventType
+mouse_event_type(uint8_t button, bool pressed)
+{
+    if (button == kCGMouseButtonLeft) {
+        return pressed ? kCGEventLeftMouseDown : kCGEventLeftMouseUp;
+    } else if (button == kCGMouseButtonRight) {
+        return pressed ? kCGEventRightMouseDown : kCGEventRightMouseUp;
+    } else {
+        return pressed ? kCGEventOtherMouseDown : kCGEventOtherMouseUp;
+    }
+}
+
 static inline void
 create_and_post_mouseclickevent(uint8_t button, bool pressed)
 {
-    button = pressed ? button : -1;
-    CGPostMouseEvent((CGPoint){-1, -1}, false, 32,
-                     0 == button,  1 == button,  2 == button,
-                     3 == button,  4 == button,  5 == button,
-                     6 == button,  7 == button,  8 == button,
-                     9 == button,  10 == button, 11 == button,
-                     12 == button, 13 == button, 14 == button,
-                     15 == button, 16 == button, 17 == button,
-                     18 == button, 19 == button, 20 == button,
-                     21 == button, 22 == button, 23 == button,
-                     24 == button, 25 == button, 26 == button,
-                     27 == button, 28 == button, 29 == button,
-                     30 == button, 31 == button);
+    CGEventRef loc_event = CGEventCreate(NULL);
+    if (!loc_event) return;
+
+    CGPoint location = CGEventGetLocation(loc_event);
+    CFRelease(loc_event);
+
+    CGEventRef event = CGEventCreateMouseEvent(NULL,
+                                               mouse_event_type(button, pressed),
+                                               location,
+                                               (CGMouseButton) button);
+    if (!event) return;
+
+    CGEventPost(kCGHIDEventTap, event);
+    CFRelease(event);
 }
 
 static inline void
