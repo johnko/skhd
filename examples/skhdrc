@@ -116,3 +116,13 @@ cmd + shift - return : ~/Scripts/qtb.sh
 
 # open mpv
 cmd - m : open -na /Applications/mpv.app $(pbpaste)
+
+# mouse button forward/back buttons
+ctrl - m4 : skhd --key "ctrl - left"
+ctrl - m3 : skhd --key "ctrl - right"
+ alt - m4 : yabai -m window --grid 16:1:0:0:1:12
+ alt - m3 : yabai -m window --grid 16:1:0:4:1:12
+ cmd - m4 : yabai -m window --grid 1:1:0:0:1:1
+ cmd - m3 : bash ~/bin/macos-move-window-to-next-screen.sh
+       m4 : skhd --key "f4"
+       m3 : skhd --key "ctrl - up"
