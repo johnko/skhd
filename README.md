@@ -23,6 +23,7 @@ list of features
 | blacklist applications     | [x]  |
 | use media-keys as hotkey   | [x]  |
 | synthesize a key-press     | [x]  |
+| mouse buttons as hotkey    | [x]  |
 
 ### Install
 
@@ -121,11 +122,14 @@ keysym       = <mod> '-' <key> | <key>
 
 mod          = 'modifier keyword' | <mod> '+' <mod>
 
-key          = <literal> | <keycode>
+key          = <literal> | <keycode> | <button>
 
 literal      = 'single letter or built-in keyword'
 
 keycode      = 'apple keyboard kVK_<Key> values (0x3C)'
+
+button       = mouse_left | mouse_right | mouse_center |
+               m[3-31]
 
 proc_map_lst = * <proc_map>
 
